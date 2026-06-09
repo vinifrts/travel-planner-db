@@ -1,0 +1,95 @@
+USE banco_turismo;
+
+-- 1.
+  
+  SELECT 
+    v.nome_viagem AS 'Viagem',
+    DATE_FORMAT(a.data_atividade, '%d/%m/%Y') AS 'Data da Atividade',
+    TIME_FORMAT(a.hora_inicio, '%H:%i') AS 'Hora de Início',
+    TIMEDIFF(a.hora_fim, a.hora_inicio) AS 'Duração',
+    a.descricao_atividade AS 'Programação / Atração'
+FROM agenda_atividade a
+INNER JOIN viagem v ON a.id_viagem = v.id_viagem
+ORDER BY v.nome_viagem, a.data_atividade, a.hora_inicio;
+
+
+-- 2. 
+  
+SELECT 
+    c.nome_cidade AS 'Cidade',
+    pt.nome_ponto AS 'Ponto Turístico',
+    pt.tipo_ponto AS 'Categoria',
+    pt.horario_atendimento AS 'Horário de Funcionamento',
+    pt.preco_entrada AS 'Valor Entrada',
+    pt.faixa_etaria AS 'Classificação'
+FROM ponto_turistico pt
+INNER JOIN cidade c ON c.id_cidade = pt.id_cidade
+WHERE pt.acessivel = 'N'
+ORDER BY c.nome_cidade, pt.nome_ponto;
+
+
+-- 3. 
+  
+SELECT 
+    v.nome_viagem AS 'Viagem',
+    td.descricao AS 'Tipo de Despesa',
+    SUM(d.valor * d.cotacao_brl) AS 'Total por Categoria (BRL)',
+    (SUM(d.valor * d.cotacao_brl) / v.qtd_pessoas) AS 'Custo Médio por Pessoa (BRL)'
+FROM despesa d
+INNER JOIN viagem v ON d.id_viagem = v.id_viagem
+INNER JOIN tipo_despesa td ON d.id_tipo_despesa = td.id_tipo_despesa
+GROUP BY v.id_viagem, v.nome_viagem, td.id_tipo_despesa, td.descricao, v.qtd_pessoas
+ORDER BY `Total por Categoria (BRL)` DESC;
+
+
+-- 4. 
+  
+SELECT 
+    v.id_viagem AS 'Código',
+    v.nome_viagem AS 'Viagem',
+    DATE_FORMAT(v.data_inicio, '%d/%m/%Y') AS 'Início',
+    DATE_FORMAT(v.data_fim, '%d/%m/%Y') AS 'Fim',
+    v.qtd_pessoas AS 'Qtd Participantes',
+    SUM(d.valor * d.cotacao_brl) AS 'Custo Total Convertido (BRL)'
+FROM viagem v
+INNER JOIN despesa d ON v.id_viagem = d.id_viagem
+GROUP BY v.id_viagem, v.nome_viagem, v.data_inicio, v.data_fim, v.qtd_pessoas
+ORDER BY `Custo Total Convertido (BRL)` DESC;
+
+
+-- 5. 
+  
+SELECT 
+    Viagem, 
+    `Tipo de Despesa`, 
+    `Data da Compra`, 
+    `Valor Original`, 
+    Moeda, 
+    `Valor em BRL`
+FROM (
+    SELECT 
+        v.nome_viagem AS Viagem,
+        td.descricao AS 'Tipo de Despesa',
+        DATE_FORMAT(d.data_compra, '%d/%m/%Y') AS 'Data da Compra',
+        d.valor AS 'Valor Original',
+        d.moeda AS Moeda,
+        (d.valor * d.cotacao_brl) AS 'Valor em BRL',
+        ROW_NUMBER() OVER (PARTITION BY d.id_viagem ORDER BY (d.valor * d.cotacao_brl) DESC) AS ranking
+    FROM despesa d
+    INNER JOIN viagem v ON d.id_viagem = v.id_viagem
+    INNER JOIN tipo_despesa td ON d.id_tipo_despesa = td.id_tipo_despesa
+) AS tabela_ranking
+WHERE ranking <= 3;
+
+
+-- 6.
+  
+SELECT 
+    v.id_viagem AS 'Código',
+    v.nome_viagem AS 'Viagem',
+    CEIL(SUM(d.valor * d.cotacao_brl)) AS 'Custo Total Arredondado (BRL)',
+    CEIL(SUM(d.valor * d.cotacao_brl) / v.qtd_pessoas) AS 'Custo por Pessoa Arredondado (BRL)'
+FROM viagem v
+INNER JOIN despesa d ON v.id_viagem = d.id_viagem
+GROUP BY v.id_viagem, v.nome_viagem, v.qtd_pessoas
+ORDER BY `Custo Total Arredondado (BRL)` DESC;
