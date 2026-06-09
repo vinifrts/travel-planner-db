@@ -1,0 +1,207 @@
+CREATE DATABASE IF NOT EXISTS banco_turismo;
+USE banco_turismo;
+
+-- =========================================================
+-- TABELA: PESSOA
+-- =========================================================
+CREATE TABLE pessoa (
+    id_pessoa INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(150) NOT NULL,
+    cpf VARCHAR(11) NOT NULL UNIQUE,
+    data_nascimento DATE NOT NULL,
+    genero CHAR(1) NOT NULL,
+    endereco VARCHAR(255)
+);
+
+-- =========================================================
+-- TABELA: PESSOA_TELEFONE
+-- =========================================================
+CREATE TABLE pessoa_telefone (
+    id_telefone INT PRIMARY KEY AUTO_INCREMENT,
+    id_pessoa INT NOT NULL,
+    numero VARCHAR(20) NOT NULL
+);
+
+-- =========================================================
+-- TABELA: PESSOA_EMAIL
+-- =========================================================
+CREATE TABLE pessoa_email (
+    id_email INT PRIMARY KEY AUTO_INCREMENT,
+    id_pessoa INT NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE
+);
+
+-- =========================================================
+-- TABELA: NECESSIDADE_ESPECIAL
+-- =========================================================
+CREATE TABLE necessidade_especial (
+    id_necessidade INT PRIMARY KEY AUTO_INCREMENT,
+    descricao VARCHAR(150) NOT NULL
+);
+
+-- =========================================================
+-- TABELA: PESSOA_NECESSIDADE (N:N)
+-- =========================================================
+CREATE TABLE pessoa_necessidade (
+    id_pessoa INT NOT NULL,
+    id_necessidade INT NOT NULL,
+    PRIMARY KEY (id_pessoa, id_necessidade)
+);
+
+-- =========================================================
+-- TABELA: VIAGEM
+-- =========================================================
+CREATE TABLE viagem (
+    id_viagem INT PRIMARY KEY AUTO_INCREMENT,
+    nome_viagem VARCHAR(150) NOT NULL,
+    data_inicio DATE NOT NULL,
+    data_fim DATE NOT NULL,
+    qtd_pessoas INT NOT NULL DEFAULT 1,
+    status VARCHAR(30) NOT NULL
+);
+
+-- =========================================================
+-- TABELA: VIAGEM_PESSOA (N:N)
+-- =========================================================
+CREATE TABLE viagem_pessoa (
+    id_viagem INT NOT NULL,
+    id_pessoa INT NOT NULL,
+    funcao VARCHAR(100),
+    PRIMARY KEY (id_viagem, id_pessoa)
+);
+
+-- =========================================================
+-- TABELA: TIPO_DESPESA
+-- =========================================================
+CREATE TABLE tipo_despesa (
+    id_tipo_despesa INT PRIMARY KEY AUTO_INCREMENT,
+    descricao VARCHAR(100) NOT NULL
+);
+
+-- =========================================================
+-- TABELA: DESPESA
+-- =========================================================
+CREATE TABLE despesa (
+    id_despesa INT PRIMARY KEY AUTO_INCREMENT,
+    id_viagem INT NOT NULL,
+    id_tipo_despesa INT NOT NULL,
+    descricao VARCHAR(255) NOT NULL,
+    data_compra DATE NOT NULL,
+    data_utilizacao DATETIME NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    moeda VARCHAR(3) NOT NULL DEFAULT 'BRL',
+    cotacao_brl DECIMAL(10,2) NOT NULL DEFAULT 1.00,
+    link_servico VARCHAR(255),
+    telefone_contato VARCHAR(20),
+    email_contato VARCHAR(150),
+    arquivo_comprovante VARCHAR(255)
+);
+
+-- =========================================================
+-- TABELA: CIDADE
+-- =========================================================
+CREATE TABLE cidade (
+    id_cidade INT PRIMARY KEY AUTO_INCREMENT,
+    nome_cidade VARCHAR(100) NOT NULL,
+    estado VARCHAR(50) NOT NULL,
+    pais VARCHAR(100) NOT NULL
+);
+
+-- =========================================================
+-- TABELA: PONTO_TURISTICO
+-- =========================================================
+CREATE TABLE ponto_turistico (
+    id_ponto_turistico INT PRIMARY KEY AUTO_INCREMENT,
+    id_cidade INT NOT NULL,
+    nome_ponto VARCHAR(150) NOT NULL,
+    tipo_ponto VARCHAR(100),
+    horario_atendimento VARCHAR(100),
+    preco_entrada DECIMAL(10,2) DEFAULT 0.00,
+    acessivel CHAR(1) NOT NULL DEFAULT 'N',
+    localizacao_maps VARCHAR(100),
+    faixa_etaria VARCHAR(30)
+);
+
+-- =========================================================
+-- TABELA: AGENDA_ATIVIDADE
+-- =========================================================
+CREATE TABLE agenda_atividade (
+    id_atividade INT PRIMARY KEY AUTO_INCREMENT,
+    id_viagem INT NOT NULL,
+    id_ponto_turistico INT,
+    descricao_atividade VARCHAR(255) NOT NULL,
+    data_atividade DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fim TIME NOT NULL
+);
+
+-- =========================================================
+-- DEFINIÇÃO DAS CHAVES ESTRANGEIRAS
+-- =========================================================
+
+ALTER TABLE pessoa_telefone
+    ADD CONSTRAINT fk_telefone_pessoa
+    FOREIGN KEY (id_pessoa)
+    REFERENCES pessoa(id_pessoa)
+    ON DELETE CASCADE;
+
+ALTER TABLE pessoa_email
+    ADD CONSTRAINT fk_email_pessoa
+    FOREIGN KEY (id_pessoa)
+    REFERENCES pessoa(id_pessoa)
+    ON DELETE CASCADE;
+
+ALTER TABLE pessoa_necessidade
+    ADD CONSTRAINT fk_pessoa_necessidade_pessoa
+    FOREIGN KEY (id_pessoa)
+    REFERENCES pessoa(id_pessoa)
+    ON DELETE CASCADE,
+    ADD CONSTRAINT fk_pessoa_necessidade_necessidade
+    FOREIGN KEY (id_necessidade)
+    REFERENCES necessidade_especial(id_necessidade)
+    ON DELETE CASCADE;
+
+ALTER TABLE viagem_pessoa
+    ADD CONSTRAINT fk_viagem_pessoa_viagem
+    FOREIGN KEY (id_viagem)
+    REFERENCES viagem(id_viagem)
+    ON DELETE CASCADE,
+    ADD CONSTRAINT fk_viagem_pessoa_pessoa
+    FOREIGN KEY (id_pessoa)
+    REFERENCES pessoa(id_pessoa)
+    ON DELETE CASCADE;
+
+ALTER TABLE despesa
+    ADD CONSTRAINT fk_despesa_viagem
+    FOREIGN KEY (id_viagem)
+    REFERENCES viagem(id_viagem)
+    ON DELETE CASCADE,
+    ADD CONSTRAINT fk_despesa_tipo
+    FOREIGN KEY (id_tipo_despesa)
+    REFERENCES tipo_despesa(id_tipo_despesa);
+
+ALTER TABLE ponto_turistico
+    ADD CONSTRAINT fk_ponto_turistico_cidade
+    FOREIGN KEY (id_cidade)
+    REFERENCES cidade(id_cidade)
+    ON DELETE CASCADE;
+
+ALTER TABLE agenda_atividade
+    ADD CONSTRAINT fk_agenda_viagem
+    FOREIGN KEY (id_viagem)
+    REFERENCES viagem(id_viagem)
+    ON DELETE CASCADE,
+    ADD CONSTRAINT fk_agenda_ponto
+    FOREIGN KEY (id_ponto_turistico)
+    REFERENCES ponto_turistico(id_ponto_turistico)
+    ON DELETE SET NULL;
+
+-- =========================================================
+-- CRIAÇÃO DE ÍNDICES PARA OTIMIZAÇÃO DE CONSULTAS
+-- =========================================================
+CREATE INDEX idx_pessoa_nome ON pessoa(nome);
+CREATE INDEX idx_viagem_nome ON viagem(nome_viagem);
+CREATE INDEX idx_despesa_data ON despesa(data_compra);
+CREATE INDEX idx_ponto_turistico_nome ON ponto_turistico(nome_ponto);
+
+SHOW TABLES;
