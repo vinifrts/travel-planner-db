@@ -1,0 +1,212 @@
+USE banco_turismo;
+
+-- =========================================================
+-- 1. POPULAÇÃO DAS TABELAS DE CADASTRO (10 REGISTROS CADA)
+-- =========================================================
+
+INSERT INTO necessidade_especial (id_necessidade, descricao) VALUES
+(1, 'Cadeirante'),
+(2, 'Deficiência Visual'),
+(3, 'Deficiência Auditiva'),
+(4, 'Mobilidade Reduzida'),
+(5, 'Autismo'),
+(6, 'Idoso'),
+(7, 'Gestante'),
+(8, 'Berço'),
+(9, 'Cadeira de Elevação'),
+(10, 'Acompanhante Terapêutico');
+
+INSERT INTO tipo_despesa (id_tipo_despesa, descricao) VALUES
+(1, 'Passagem Aérea'),
+(2, 'Hospedagem'),
+(3, 'Alimentação'),
+(4, 'Aluguel de Carro'),
+(5, 'Combustível'),
+(6, 'Ingresso'),
+(7, 'Seguro Viagem'),
+(8, 'Transporte Urbano'),
+(9, 'Estacionamento'),
+(10, 'Outros');
+
+INSERT INTO cidade (id_cidade, nome_cidade, estado, pais) VALUES
+(1, 'Fortaleza', 'Ceará', 'Brasil'),
+(2, 'Gramado', 'Rio Grande do Sul', 'Brasil'),
+(3, 'Rio de Janeiro', 'Rio de Janeiro', 'Brasil'),
+(4, 'Salvador', 'Bahia', 'Brasil'),
+(5, 'Recife', 'Pernambuco', 'Brasil'),
+(6, 'Curitiba', 'Paraná', 'Brasil'),
+(7, 'Florianópolis', 'Santa Catarina', 'Brasil'),
+(8, 'Lisboa', 'Lisboa', 'Portugal'),
+(9, 'Paris', 'Île-de-France', 'França'),
+(10, 'Orlando', 'Flórida', 'Estados Unidos');
+
+INSERT INTO pessoa (id_pessoa, nome, cpf, data_nascimento, genero, endereco) VALUES
+(1, 'Lucas Oliveira', '11111111111', '1985-03-12', 'M', 'Rua das Flores, 101'),
+(2, 'Marina Silva', '22222222222', '1990-08-20', 'F', 'Avenida Central, 220'),
+(3, 'Carlos Santos', '33333333333', '1993-02-11', 'M', 'Rua do Sol, 45'),
+(4, 'Fernanda Lima', '44444444444', '1988-07-05', 'F', 'Rua das Acácias, 88'),
+(5, 'João Pereira', '55555555555', '1995-10-14', 'M', 'Rua da Praia, 300'),
+(6, 'Patrícia Gomes', '66666666666', '1992-06-09', 'F', 'Avenida Beira Mar, 500'),
+(7, 'Rafael Costa', '77777777777', '1987-12-01', 'M', 'Rua Liberdade, 76'),
+(8, 'Juliana Alves', '88888888888', '1998-01-25', 'F', 'Rua São José, 144'),
+(9, 'Bruno Rocha', '99999999999', '1991-09-30', 'M', 'Avenida Brasil, 400'),
+(10, 'Amanda Dias', '10101010101', '1997-11-17', 'F', 'Rua Nova, 99');
+
+INSERT INTO pessoa_telefone (id_telefone, id_pessoa, numero) VALUES
+(1, 1, '85999990001'),
+(2, 2, '85999990002'),
+(3, 3, '85999990003'),
+(4, 4, '85999990004'),
+(5, 5, '85999990005'),
+(6, 6, '85999990006'),
+(7, 7, '85999990007'),
+(8, 8, '85999990008'),
+(9, 9, '85999990009'),
+(10, 10, '85999990010');
+
+INSERT INTO pessoa_email (id_email, id_pessoa, email) VALUES
+(1, 1, 'lucas@email.com'),
+(2, 2, 'marina@email.com'),
+(3, 3, 'carlos@email.com'),
+(4, 4, 'fernanda@email.com'),
+(5, 5, 'joao@email.com'),
+(6, 6, 'patricia@email.com'),
+(7, 7, 'rafael@email.com'),
+(8, 8, 'juliana@email.com'),
+(9, 9, 'bruno@email.com'),
+(10, 10, 'amanda@email.com');
+
+INSERT INTO pessoa_necessidade (id_pessoa, id_necessidade) VALUES
+(1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7,7), (8,8), (9,9), (10,10);
+
+INSERT INTO viagem (id_viagem, nome_viagem, data_inicio, data_fim, qtd_pessoas, status) VALUES
+(1, 'Férias em Gramado', '2025-07-10', '2025-07-17', 4, 'PLANEJADA'),
+(2, 'Verão em Fortaleza', '2025-01-05', '2025-01-12', 3, 'FINALIZADA'),
+(3, 'Carnaval no Rio', '2025-02-28', '2025-03-05', 5, 'FINALIZADA'),
+(4, 'Férias em Salvador', '2025-09-10', '2025-09-18', 2, 'PLANEJADA'),
+(5, 'Passeio em Recife', '2025-08-01', '2025-08-06', 4, 'FINALIZADA'),
+(6, 'Turismo em Curitiba', '2025-06-15', '2025-06-20', 3, 'FINALIZADA'),
+(7, 'Praias de Florianópolis', '2025-12-10', '2025-12-18', 6, 'PLANEJADA'),
+(8, 'Viagem para Lisboa', '2025-05-05', '2025-05-15', 2, 'EM_ANDAMENTO'),
+(9, 'Viagem para Paris', '2025-10-01', '2025-10-12', 2, 'PLANEJADA'),
+(10, 'Férias em Orlando', '2025-11-03', '2025-11-15', 5, 'PLANEJADA');
+
+INSERT INTO ponto_turistico (id_ponto_turistico, id_cidade, nome_ponto, tipo_ponto, horario_atendimento, preco_entrada, acessivel, localizacao_maps, faixa_etaria) VALUES
+(1, 1, 'Beach Park', 'Parque Aquático', '09:00-17:00', 220.00, 'S', '-3.842,-38.389', 'Livre'),
+(2, 2, 'Lago Negro', 'Parque', '08:00-18:00', 0.00, 'S', '-29.379,-50.873', 'Livre'),
+(3, 3, 'Cristo Redentor', 'Monumento', '08:00-19:00', 125.00, 'S', '-22.951,-43.210', 'Livre'),
+(4, 4, 'Pelourinho', 'Centro Histórico', '08:00-20:00', 0.00, 'N', '-12.971,-38.510', 'Livre'),
+(5, 5, 'Instituto Ricardo Brennand', 'Museu', '09:00-17:00', 50.00, 'S', '-8.062,-34.871', 'Livre'),
+(6, 6, 'Jardim Botânico', 'Parque', '08:00-18:00', 20.00, 'S', '-25.443,-49.239', 'Livre'),
+(7, 7, 'Praia da Joaquina', 'Praia', '00:00-23:59', 0.00, 'S', '-27.629,-48.449', 'Livre'),
+(8, 8, 'Torre de Belém', 'Monumento', '09:30-18:00', 15.00, 'S', '38.691,-9.216', 'Livre'),
+(9, 9, 'Museu do Louvre', 'Museu', '09:00-18:00', 22.00, 'S', '48.860,2.337', 'Livre'),
+(10, 10, 'Magic Kingdom', 'Parque Temático', '09:00-22:00', 180.00, 'S', '28.417,-81.581', 'Livre');
+
+-- =========================================================
+-- 2. PROCEDIMENTOS AUTOMATIZADOS PARA TABELAS TRANSACIONAIS (300 REGISTROS CADA)
+-- =========================================================
+
+DELIMITER $$
+
+-- Procedimento para Participantes da Viagem
+
+CREATE PROCEDURE gerar_viagem_pessoa()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE i <= 300 DO
+        INSERT INTO viagem_pessoa (id_viagem, id_pessoa, funcao)
+        VALUES (
+            ((i - 1) MOD 10) + 1,
+            ((i - 1) MOD 10) + 1,
+            IF(i MOD 2 = 0, 'Participante', 'Responsável')
+        ) ON DUPLICATE KEY UPDATE funcao = VALUES(funcao);
+        SET i = i + 1;
+    END WHILE;
+END$$
+
+-- Procedimento para Despesas Detalhadas (com cotações para viagens internacionais)
+
+CREATE PROCEDURE gerar_despesas()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE i <= 300 DO
+        INSERT INTO despesa (
+            id_viagem, id_tipo_despesa, descricao, data_compra, data_utilizacao, 
+            valor, moeda, cotacao_brl, link_servico, telefone_contato, email_contato, arquivo_comprovante
+        )
+        VALUES (
+            ((i - 1) MOD 10) + 1,
+            ((i - 1) MOD 10) + 1,
+            CONCAT('Despesa Automatizada ', i),
+            DATE_ADD('2025-01-01', INTERVAL i DAY),
+            DATE_ADD('2025-02-01 08:00:00', INTERVAL i HOUR),
+            ROUND((RAND() * 3000) + 100, 2),
+            CASE 
+                WHEN i MOD 4 = 0 THEN 'USD'
+                WHEN i MOD 4 = 1 THEN 'BRL'
+                WHEN i MOD 4 = 2 THEN 'EUR'
+                ELSE 'BRL'
+            END,
+            CASE 
+                WHEN i MOD 4 = 0 THEN 5.50
+                WHEN i MOD 4 = 1 THEN 1.00
+                WHEN i MOD 4 = 2 THEN 6.20
+                ELSE 1.00
+            END,
+            CONCAT('https://reserva-online-', i, '.com'),
+            CONCAT('8599999', LPAD(i, 4, '0')),
+            CONCAT('contato-servico', i, '@email.com'),
+            CONCAT('comprovante_fiscal_', i, '.pdf')
+        );
+        SET i = i + 1;
+    END WHILE;
+END$$
+
+-- Procedimento para Agenda de Atividades
+
+CREATE PROCEDURE gerar_agenda()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE i <= 300 DO
+        INSERT INTO agenda_atividade (
+            id_viagem, id_ponto_turistico, descricao_atividade, data_atividade, hora_inicio, hora_fim
+        )
+        VALUES (
+            ((i - 1) MOD 10) + 1,
+            ((i - 1) MOD 10) + 1,
+            CONCAT('Visita Técnica / Atração ', i),
+            DATE_ADD('2025-01-01', INTERVAL i DAY),
+            MAKETIME((i MOD 12) + 8, 0, 0),
+            MAKETIME((i MOD 12) + 10, 0, 0)
+        );
+        SET i = i + 1;
+    END WHILE;
+END$$
+
+DELIMITER ;
+
+-- Execução da carga de dados
+
+CALL gerar_viagem_pessoa();
+CALL gerar_despesas();
+CALL gerar_agenda();
+
+-- Remoção dos procedimentos armazenados
+DROP PROCEDURE IF EXISTS gerar_viagem_pessoa;
+DROP PROCEDURE IF EXISTS gerar_despesas;
+DROP PROCEDURE IF EXISTS gerar_agenda;
+
+-- Verificação dos registros inseridos
+
+SELECT 'pessoa' AS tabela, COUNT(*) AS total FROM pessoa
+UNION ALL
+SELECT 'cidade', COUNT(*) FROM cidade
+UNION ALL
+SELECT 'ponto_turistico', COUNT(*) FROM ponto_turistico
+UNION ALL
+SELECT 'viagem', COUNT(*) FROM viagem
+UNION ALL
+SELECT 'agenda_atividade', COUNT(*) FROM agenda_atividade
+UNION ALL
+SELECT 'despesa', COUNT(*) FROM despesa;
